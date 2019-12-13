@@ -21,7 +21,17 @@ object RecFun extends RecFunInterface {
   /**
    * Exercise 2
    */
-  def balance(chars: List[Char]): Boolean = true
+  def balance(chars: List[Char]): Boolean = {
+    def balanceHelper(list: List[Char], n: Int): Boolean = (list, n) match{
+        case (Nil, 0) => true
+        case (_, n) if n < 0 => false
+        case ('(' :: xs, n) => balanceHelper(xs, n + 1) 
+        case (')' :: xs, n) => balanceHelper(xs, n - 1)
+        case (x :: xs, n) => balanceHelper(xs, n)
+        case (_, _) => false
+    }
+    balanceHelper(chars, 0)
+  }
 
   /**
    * Exercise 3
