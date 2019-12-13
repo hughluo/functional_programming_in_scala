@@ -36,5 +36,19 @@ object RecFun extends RecFunInterface {
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = 0
+  def countChange(money: Int, coins: List[Int]): Int = {
+    def countChangeHelper(list: List[(Int, Int)], res: Int): Int = list match{
+      case Nil => res
+      case (curr, last):: xs => if(curr == money) countChangeHelper(xs, res + 1) else countChangeHelper(createNewList((curr, last)) ++ xs, res)
+      case _ => 0
+    }
+    
+    def createNewList(ele: (Int, Int)): List[(Int, Int)] = {
+      val (curr, last) = ele
+      coins.collect{
+        case coin if coin >= last && curr + coin <= money => (curr + coin, coin)
+      }
+    }
+    countChangeHelper(coins.map(c => (c, c)), 0)
+  }
 }
