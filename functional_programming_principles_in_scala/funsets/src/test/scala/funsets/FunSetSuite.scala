@@ -71,18 +71,62 @@ class FunSetSuite {
     }
   }
 
-  @Test def `intersection contains all elements that are in both set`: Unit = {
+  @Test def `intersect contains all elements that are in both set`: Unit = {
     new TestSets {
       val u12 = union(s1, s2)
       val u13 = union(s1, s3)
       val s = intersect(u12, u13)
-      assert(contains(s, 1), "Intersection 1")
-      assert(!contains(s, 2), "Intersection 2")
-      assert(!contains(s, 3), "Intersection 3")
+      assert(contains(s, 1), "Intersect 1")
+      assert(!contains(s, 2), "Intersect 2")
+      assert(!contains(s, 3), "Intersect 3")
     }
   }
 
+  @Test def `diff contains different of two given set`: Unit = {
+    new TestSets {
+      val u12 = union(s1, s2)
+      val u23 = union(s2, s3)
+      val s = diff(u12, u23)
+      assert(contains(s, 1), "diff 1")
+      assert(!contains(s, 2), "diff 2")
+      assert(!contains(s, 3), "diff 3")
+    }
+  }
 
+  @Test def `filter contains the subset of s which p holds`: Unit = {
+    new TestSets {
+      val u12 = union(s1, s2)
+      val s = filter(u12, elem => elem == 1)
+      assert(contains(s, 1), "filter 1")
+      assert(!contains(s, 2), "filter 2")
+      assert(!contains(s, 3), "filter 3")
+    }
+  }
+
+  @Test def `forall check whether all bounded integer within s satisfy p`: Unit = {
+    new TestSets {
+      val s = union(s1, s2)
+      assert(forall(s, elem => elem < 3), "forall 1")
+      assert(!forall(s, elem => elem >= 3), "forall 2")
+    }
+  }
+
+  @Test def `exists check whether there is a bounded integer within s satisfy p`: Unit = {
+    new TestSets {
+      val s = union(s1, s2)
+      assert(exists(s, elem => elem < 2), "exists 1")
+      assert(!exists(s, elem => elem >= 3), "exists 2")
+    }
+  }
+
+  @Test def `map transfrom a set by applying given function`: Unit = {
+    new TestSets {
+      val s = map(union(s2, s3), elem => elem - 1)
+      assert(contains(s, 1), "map 1")
+      assert(contains(s, 2), "map 1")
+      assert(!contains(s, 3), "map 3")
+    }
+  }
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
