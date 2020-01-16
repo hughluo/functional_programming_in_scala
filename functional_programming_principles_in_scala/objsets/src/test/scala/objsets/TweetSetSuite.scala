@@ -53,11 +53,11 @@ class TweetSetSuite {
       assertEquals(4, size(set1.union(set5)))
     }
   
-  // @Test def `mostRetweeted: set5`: Unit =
-  //   new TestSets{
-  //     val mostRetweetedTweet = set5.mostRetweeted
-  //     assertEquals("a body", mostRetweetedTweet.text)
-  //   }
+  @Test def `mostRetweeted: set5`: Unit =
+    new TestSets{
+      val mostRetweetedTweet = set5.mostRetweeted
+      assertEquals("a body", mostRetweetedTweet.text)
+    }
 
   @Test def `descending: set5`: Unit =
     new TestSets {

@@ -134,7 +134,14 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   def union(that: TweetSet): TweetSet = 
     right.union(left.union(that.incl(elem)))
   
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet = {
+    var mostRetweetedTweet = elem
+    def update(tw: Tweet): Unit = {
+      if (tw.retweets > mostRetweetedTweet.retweets) mostRetweetedTweet = tw
+    }
+    this.foreach(update)
+    mostRetweetedTweet
+  }
 
   /**
    * The following methods are already implemented
