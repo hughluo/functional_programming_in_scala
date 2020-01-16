@@ -13,6 +13,7 @@ class TweetSetSuite {
     val set4c = set3.incl(c)
     val set4d = set3.incl(d)
     val set5 = set4c.incl(d)
+    val set3acd = set2.incl(c).incl(d)
   }
 
   def asSet(tweets: TweetSet): Set[Tweet] = {
@@ -53,9 +54,9 @@ class TweetSetSuite {
       assertEquals(4, size(set1.union(set5)))
     }
   
-  @Test def `mostRetweeted: set5`: Unit =
+  @Test def `mostRetweeted: set3acd`: Unit =
     new TestSets{
-      val mostRetweetedTweet = set5.mostRetweeted
+      val mostRetweetedTweet = set3acd.mostRetweeted
       assertEquals("a body", mostRetweetedTweet.text)
     }
 
