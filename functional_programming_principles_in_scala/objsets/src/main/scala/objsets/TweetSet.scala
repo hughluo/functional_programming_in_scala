@@ -144,7 +144,10 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     mostRetweetedTweet
   }
 
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = {
+    val most = this.mostRetweeted
+    new Cons(most, this.remove(most).descendingByRetweet)
+  }
 
   /**
    * The following methods are already implemented
