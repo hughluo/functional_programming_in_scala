@@ -105,7 +105,20 @@ trait Huffman extends HuffmanInterface {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+    val orderedFreqList = sortFreqList(freqs)
+    convertFreqListToLeafList(orderedFreqList)
+  }
+
+  def sortFreqList(freqs: List[(Char, Int)]): List[(Char, Int)] = {
+    if (freqs.length < 2) freqs
+    else {
+      val pivot = freqs.head._2
+      sortFreqList (freqs filter (_._2 < pivot)) ++ (freqs filter (_._2 == pivot)) ++ sortFreqList (freqs filter(_._2 > pivot))
+    }
+  }
+
+  def convertFreqListToLeafList(freqs: List[(Char, Int)]): List[Leaf] = freqs.map( f => Leaf(f._1, f._2))
 
   /**
    * Checks whether the list `trees` contains only one single code tree.
@@ -239,4 +252,7 @@ object Main extends App {
   val res: List[(Char, Int)]= Huffman.times(List('a', 'b', 'a', 'c', 'a'))
   // println("Hello")
   println(res)
+
+  val sortedRes = Huffman.sortFreqList(res)
+  println(sortedRes)
 }
