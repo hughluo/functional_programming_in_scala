@@ -70,7 +70,35 @@ trait Huffman extends HuffmanInterface {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+  def times(chars: List[Char]): List[(Char, Int)] = timesAcc(chars, List())
+
+  def timesAcc(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = {
+    chars match {
+      case x::xs => timesAcc(xs, timesAccHelper(x, acc))
+      case List() => acc
+    }
+  }
+
+  def timesAccHelper(char: Char, acc: List[(Char, Int)]): List[(Char, Int)] = {
+    if (isCharInPairs(char, acc)) updateTimesAcc(char, acc, List())
+    else (char, 1)::acc
+  }
+    
+  def isCharInPairs(char: Char, pairs: List[(Char, Int)]): Boolean = pairs match {
+    case x::xs if (x._1==char) => true
+    case x::xs if (x._1!=char) => isCharInPairs(char, xs)
+    case List() => false
+  }
+
+  def updateTimesAcc(char: Char, old: List[(Char, Int)], acc: List[(Char, Int)]): List[(Char, Int)] = old match {
+    case x::xs => updateTimesAcc(char, xs, updateTimesPair(char, x)::acc)
+    case List() => acc match {
+      case List() => List((char, 1))
+      case _ => acc
+    }
+  }
+
+  def updateTimesPair(char: Char, pair: (Char, Int)): (Char, Int) = if (char == pair._1) (pair._1, pair._2 + 1) else pair
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -196,3 +224,21 @@ trait Huffman extends HuffmanInterface {
 }
 
 object Huffman extends Huffman
+
+object Main extends App {
+  // val pair = Huffman.updateTimesPair('a', ('a', 0))
+  // println(pair)
+
+  // val accUpdate = Huffman.timesAccUpdate('a', List(('a', 2), ('b', 1)), List())
+  // println(accUpdate)
+
+  // val accUpdate = Huffman.timesAccUpdate('b', List(('a', 1)), List())
+  // println(accUpdate)
+
+  // var acc = Huffman.timesAcc(List('a', 'b', 'a'), List())
+  // println(acc)
+
+  val res: List[(Char, Int)]= Huffman.times(List('a', 'b', 'a', 'c', 'a'))
+  // println("Hello")
+  println(res)
+}
