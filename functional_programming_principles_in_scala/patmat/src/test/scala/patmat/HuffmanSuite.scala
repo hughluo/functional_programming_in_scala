@@ -23,14 +23,10 @@ class HuffmanSuite {
       assertEquals(List('a','b','d'), chars(t2))
     }
 
-  // @Test def `updateTimesPair`: Unit = {
-  //     val pair = updateTimesPair('a', ('a', 0))
-  //     assertEquals(('a', 1), pair)
-  //   }
-  // @Test def `times`: Unit = {
-  //   val res = times(List('a', 'b', 'a'))
-  //   assertEquals(List(('a', 2), ('b', 1)), res)
-  // }
+  @Test def `test times`: Unit = {
+    val charList = List('a', 'b', 'a')
+    assertEquals(List(('a', 2), ('b', 1)), times(charList))
+  }
 
   @Test def `string2chars hello world`: Unit =
     assertEquals(List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'), string2Chars("hello, world"))
@@ -44,7 +40,6 @@ class HuffmanSuite {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
     assertEquals(List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)), combine(leaflist))
   }
-
 
   @Test def `decode and encode a very short text should be identity (10pts)`: Unit =
     new TestTrees {

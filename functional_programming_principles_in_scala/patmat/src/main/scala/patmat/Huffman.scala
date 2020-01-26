@@ -72,11 +72,9 @@ trait Huffman extends HuffmanInterface {
    */
   def times(chars: List[Char]): List[(Char, Int)] = timesAcc(chars, List())
 
-  def timesAcc(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = {
-    chars match {
-      case x::xs => timesAcc(xs, timesAccHelper(x, acc))
-      case List() => acc
-    }
+  def timesAcc(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] = chars match {
+    case x::xs => timesAcc(xs, timesAccHelper(x, acc))
+    case List() => acc
   }
 
   def timesAccHelper(char: Char, acc: List[(Char, Int)]): List[(Char, Int)] = {
