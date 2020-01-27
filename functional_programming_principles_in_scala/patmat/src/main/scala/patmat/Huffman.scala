@@ -142,7 +142,6 @@ trait Huffman extends HuffmanInterface {
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
     case x1::Nil => trees
-    case x1::x2::Nil => trees
     case (l1 @ Leaf(c1, w1)) :: (l2 @ Leaf(c2, w2)) :: xs => Fork(l1, l2, List(c1, c2), w1 + w2) :: xs
     case (f1 @ Fork(_, _, ls1, w1)) :: (f2 @ Fork(_, _, ls2, w2)) :: xs => Fork(f1, f2, ls1:::ls2, w1 + w2) :: xs
     case (l1 @ Leaf(c1, w1)) :: (f2 @ Fork(_, _, ls, w2)) :: xs => Fork(l1, f2, c1::ls, w1 + w2) :: xs
@@ -160,7 +159,11 @@ trait Huffman extends HuffmanInterface {
    * In such an invocation, `until` should call the two functions until the list of
    * code trees contains only one single tree, and then return that singleton list.
    */
-  def until(done: List[CodeTree] => Boolean, merge: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = ???
+  def until(done: List[CodeTree] => Boolean, merge: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = 
+    if (done(trees)) trees
+    else {
+      until(done, merge)(merge(trees))
+    }
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -168,8 +171,11 @@ trait Huffman extends HuffmanInterface {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
-
+  def createCodeTree(chars: List[Char]): CodeTree = {
+    val trees = makeOrderedLeafList(times(chars))
+    val sing: List[CodeTree] = until(singleton, combine)(trees)
+    sing.head
+  }
 
   // Part 3: Decoding
 
@@ -259,10 +265,16 @@ object Main extends App {
   // var acc = Huffman.timesAcc(List('a', 'b', 'a'), List())
   // println(acc)
 
-  val res: List[(Char, Int)]= Huffman.times(List('a', 'b', 'a', 'c', 'a'))
-  // println("Hello")
-  println(res)
+  val ls = List('a', 'b', 'a', 'c', 'a')
 
-  val sortedRes = Huffman.sortFreqList(res)
-  println(sortedRes)
+  // val res: List[(Char, Int)]= Huffman.times(List('a', 'b', 'a', 'c', 'a'))
+  // // println("Hello")
+  // println(res)
+
+  // val sortedRes = Huffman.sortFreqList(res)
+  // println(sortedRes)
+
+  val tree = Huffman.createCodeTree(ls)
+  println(tree)
+
 }
