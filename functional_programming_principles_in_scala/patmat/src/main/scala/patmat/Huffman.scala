@@ -123,7 +123,10 @@ trait Huffman extends HuffmanInterface {
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = trees match {
+    case x::Nil => true
+    case _ => false
+  }
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -137,7 +140,14 @@ trait Huffman extends HuffmanInterface {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case x1::Nil => trees
+    case x1::x2::Nil => trees
+    case (l1 @ Leaf(c1, w1)) :: (l2 @ Leaf(c2, w2)) :: xs => Fork(l1, l2, List(c1, c2), w1 + w2) :: xs
+    case (f1 @ Fork(_, _, ls1, w1)) :: (f2 @ Fork(_, _, ls2, w2)) :: xs => Fork(f1, f2, ls1:::ls2, w1 + w2) :: xs
+    case (l1 @ Leaf(c1, w1)) :: (f2 @ Fork(_, _, ls, w2)) :: xs => Fork(l1, f2, c1::ls, w1 + w2) :: xs
+    case (f1 @ Fork(_, _, ls, w1)) :: (l2 @ Leaf(c2, w2)) :: xs => Fork(f1, l2, c2::ls, w1 + w2) :: xs
+  }
 
   /**
    * This function will be called in the following way:
