@@ -41,6 +41,30 @@ class HuffmanSuite {
     assertEquals(List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)), combine(leaflist))
   }
 
+  @Test def `decodeChar test`: Unit = {
+    val ls = List('a', 'b', 'a', 'c', 'a')
+    val tree = Huffman.createCodeTree(ls)
+    val res_a = decodeChar(tree, List(1))
+    val res_b = decodeChar(tree, List(0, 0))
+    val res_c = decodeChar(tree, List(0, 1))
+    assertEquals(('a', List()), res_a)
+    assertEquals(('b', List()), res_b)
+    assertEquals(('c', List()), res_c)
+  }
+
+  @Test def `decode test`: Unit = {
+    val ls = List('a', 'b', 'a', 'c', 'a')
+    val tree = Huffman.createCodeTree(ls)
+    val res_a = decode(tree, List(1))
+    val res_b = decode(tree, List(0, 0))
+    val res_c = decode(tree, List(0, 1))
+    val res_abc = decode(tree, List(1, 0, 0, 0, 1))
+    assertEquals(List('a'), res_a)
+    assertEquals(List('b'), res_b)
+    assertEquals(List('c'), res_c)
+    assertEquals(List('a', 'b', 'c'), res_abc)
+  }
+
   @Test def `decode and encode a very short text should be identity (10pts)`: Unit =
     new TestTrees {
       assertEquals("ab".toList, decode(t1, encode(t1)("ab".toList)))

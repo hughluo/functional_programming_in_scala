@@ -185,7 +185,26 @@ trait Huffman extends HuffmanInterface {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = decodeAcc(tree, bits, List())
+
+  def decodeAcc(root: CodeTree, bits: List[Bit], acc:List[Char]): List[Char] = bits match {
+    case Nil => acc.reverse
+    case _ => {
+      val (char, rest_bits) = decodeChar(root, bits)
+      decodeAcc(root, rest_bits, char::acc)
+    }
+  }
+
+
+  // decode one char, return char and rest bits
+  def decodeChar(tree: CodeTree, bits: List[Bit]): (Char, List[Bit]) = tree match {
+    case Leaf(c, _) => (c, bits)
+    case Fork(l, r, _, _) => bits match {
+      case 0::xs => decodeChar(l, xs)
+      case 1::xs => decodeChar(r, xs)
+    }
+    
+  }
 
   /**
    * A Huffman coding tree for the French language.
@@ -203,7 +222,7 @@ trait Huffman extends HuffmanInterface {
   /**
    * Write a function that returns the decoded secret
    */
-  def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode, secret)
 
 
   // Part 4a: Encoding using Huffman tree
@@ -253,28 +272,7 @@ trait Huffman extends HuffmanInterface {
 object Huffman extends Huffman
 
 object Main extends App {
-  // val pair = Huffman.updateTimesPair('a', ('a', 0))
-  // println(pair)
-
-  // val accUpdate = Huffman.timesAccUpdate('a', List(('a', 2), ('b', 1)), List())
-  // println(accUpdate)
-
-  // val accUpdate = Huffman.timesAccUpdate('b', List(('a', 1)), List())
-  // println(accUpdate)
-
-  // var acc = Huffman.timesAcc(List('a', 'b', 'a'), List())
-  // println(acc)
-
-  val ls = List('a', 'b', 'a', 'c', 'a')
-
-  // val res: List[(Char, Int)]= Huffman.times(List('a', 'b', 'a', 'c', 'a'))
-  // // println("Hello")
-  // println(res)
-
-  // val sortedRes = Huffman.sortFreqList(res)
-  // println(sortedRes)
-
-  val tree = Huffman.createCodeTree(ls)
-  println(tree)
+ 
+  println(Huffman.decodedSecret)
 
 }
