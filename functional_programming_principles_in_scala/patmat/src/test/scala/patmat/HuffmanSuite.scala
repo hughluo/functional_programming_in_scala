@@ -11,6 +11,15 @@ class HuffmanSuite {
     val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
   }
 
+  trait TestEncodeDecode {
+    val ls = List('a', 'b', 'a', 'c', 'a')
+    val tree = createCodeTree(ls)
+    val res_a = List(1)
+    val res_b = List(0, 0)
+    val res_c = List(0, 1)
+    val res_abc = List(1, 0, 0, 0, 1)
+  }
+
   @Test def `weight of a larger tree (10pts)`: Unit =
     new TestTrees {
       assertEquals(5, weight(t1))
@@ -52,16 +61,16 @@ class HuffmanSuite {
   }
 
   @Test def `decode test`: Unit = {
-    val ls = List('a', 'b', 'a', 'c', 'a')
-    val tree = Huffman.createCodeTree(ls)
-    val res_a = decode(tree, List(1))
-    val res_b = decode(tree, List(0, 0))
-    val res_c = decode(tree, List(0, 1))
-    val res_abc = decode(tree, List(1, 0, 0, 0, 1))
-    assertEquals(List('a'), res_a)
-    assertEquals(List('b'), res_b)
-    assertEquals(List('c'), res_c)
-    assertEquals(List('a', 'b', 'c'), res_abc)
+    new TestEncodeDecode {
+      val a = decode(tree, res_a)
+      val b = decode(tree, res_b)
+      val c = decode(tree, res_c)
+      val abc = decode(tree, res_abc)
+      assertEquals(List('a'), a)
+      assertEquals(List('b'), b)
+      assertEquals(List('c'), c)
+      assertEquals(List('a', 'b', 'c'), abc)
+    }
   }
 
   @Test def `encodeChar test`: Unit = {
@@ -73,6 +82,13 @@ class HuffmanSuite {
     assertEquals(List(1), res_a)
     assertEquals(List(0, 0), res_b)
     assertEquals(List(0, 1), res_c)
+  }
+
+  @Test def `encode test`: Unit = {
+    new TestEncodeDecode {
+      val encoded_abc = encode(tree)(List('a', 'b', 'c'))
+      assertEquals(res_abc, encoded_abc)
+    }
   }
 
   @Test def `decode and encode a very short text should be identity (10pts)`: Unit =
