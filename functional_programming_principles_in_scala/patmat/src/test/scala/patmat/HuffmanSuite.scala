@@ -96,6 +96,12 @@ class HuffmanSuite {
       assertEquals("ab".toList, decode(t1, encode(t1)("ab".toList)))
     }
 
+  @Test def `quickEncode test`: Unit = {
+    new TestEncodeDecode {
+      val encoded_abc = quickEncode(tree)(List('a', 'b', 'c'))
+      assertEquals(res_abc, encoded_abc)
+    }
+  }
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
