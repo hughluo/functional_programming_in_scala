@@ -233,6 +233,23 @@ trait Huffman extends HuffmanInterface {
    */
   def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
 
+
+  def encodeChar(tree: CodeTree)(text: Char): List[Bit] = {
+    encodeCharAcc(tree)(text)(List())  
+  }
+
+  def encodeCharAcc(tree: CodeTree)(text: Char)(acc: List[Bit]): List[Bit] = tree match {
+    case Leaf(c, _) => acc.reverse
+    case Fork(left @ Fork(_, _, csLeft, _), right, _, _) => {
+      if (csLeft.contains(text)) encodeCharAcc(left)(text)(0::acc)
+      else encodeCharAcc(right)(text)(1::acc)
+    } 
+    case Fork(left @ Leaf(c, _), right, _, _) => {
+      if (c == text) encodeCharAcc(left)(text)(0::acc)
+      else encodeCharAcc(right)(text)(1::acc)
+    } 
+  }
+
   // Part 4b: Encoding using code table
 
   type CodeTable = List[(Char, List[Bit])]

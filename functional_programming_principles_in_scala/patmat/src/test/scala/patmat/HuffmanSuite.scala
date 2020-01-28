@@ -11,7 +11,6 @@ class HuffmanSuite {
     val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
   }
 
-
   @Test def `weight of a larger tree (10pts)`: Unit =
     new TestTrees {
       assertEquals(5, weight(t1))
@@ -63,6 +62,17 @@ class HuffmanSuite {
     assertEquals(List('b'), res_b)
     assertEquals(List('c'), res_c)
     assertEquals(List('a', 'b', 'c'), res_abc)
+  }
+
+  @Test def `encodeChar test`: Unit = {
+    val ls = List('a', 'b', 'a', 'c', 'a')
+    val tree = Huffman.createCodeTree(ls)
+    val res_a = encodeChar(tree)('a')
+    val res_b = encodeChar(tree)('b')
+    val res_c = encodeChar(tree)('c')
+    assertEquals(List(1), res_a)
+    assertEquals(List(0, 0), res_b)
+    assertEquals(List(0, 1), res_c)
   }
 
   @Test def `decode and encode a very short text should be identity (10pts)`: Unit =
