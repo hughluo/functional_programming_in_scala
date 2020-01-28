@@ -141,6 +141,7 @@ trait Huffman extends HuffmanInterface {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case Nil => trees
     case x1::Nil => trees
     case (l1 @ Leaf(c1, w1)) :: (l2 @ Leaf(c2, w2)) :: xs => Fork(l1, l2, List(c1, c2), w1 + w2) :: xs
     case (f1 @ Fork(_, _, ls1, w1)) :: (f2 @ Fork(_, _, ls2, w2)) :: xs => Fork(f1, f2, ls1:::ls2, w1 + w2) :: xs
