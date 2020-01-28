@@ -1,3 +1,3 @@
 # Functional Programming in Scala
 
-Assignment for [Course](https://www.coursera.org/specializations/scala?)
+Assignment for course [Functional Programming in Scala](https://www.coursera.org/specializations/scala?), available in coursera.
