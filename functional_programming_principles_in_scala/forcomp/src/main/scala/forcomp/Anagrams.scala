@@ -87,7 +87,35 @@ object Anagrams extends AnagramsInterface {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def subOccurrences(o: (Char, Int)): List[(Char, Int)] = {
+  val (c, n) = o
+  List.fill(n+1)(c) zip (0 to n)
+}
+
+  def foldHelper(os: Occurrences, zls: List[Occurrences]): List[Occurrences] = {
+  for(z <- zls; o <- os) yield o::z
+}
+
+  def combinationHelper(oss: List[Occurrences]): List[Occurrences] = oss match {
+  case Nil => List(List())
+  case os :: rest => foldHelper(os, combinationHelper(rest))
+}
+
+  def delZeroHelper(os: Occurrences): Occurrences = os match {
+  case Nil => Nil
+  case (_, 0) :: xs => delZeroHelper(xs)
+  case x :: xs => x :: delZeroHelper(xs)
+}
+
+  def delZero(oss: List[Occurrences]): List[Occurrences] = {
+  for (os <- oss) yield delZeroHelper(os)
+}
+
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+  val m = occurrences.map(subOccurrences)
+  val rWithZero = combinationHelper(m)
+  delZero(rWithZero)
+}
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
