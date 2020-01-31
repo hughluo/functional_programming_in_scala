@@ -37,6 +37,13 @@ class AnagramsSuite {
     assertEquals(lad, subtract(lard, r))
   }
 
+  @Test def `subtract: laard-ar`: Unit = {
+    val laard = List(('a', 2), ('d', 1), ('l', 1), ('r', 1))
+    val ar = List(('a', 1), ('r', 1))
+    val lad = List(('a', 1), ('d', 1), ('l', 1))
+    assertEquals(lad, subtract(laard, ar))
+  }
+
 
   @Test def `combinations: [] (8pts)`: Unit =
     assertEquals(List(Nil), combinations(Nil))
@@ -55,6 +62,29 @@ class AnagramsSuite {
       List(('a', 2), ('b', 2))
     )
     assertEquals(abbacomb.toSet, combinations(abba).toSet)
+  }
+
+  @Test def `occurrencesAnagrams test yes man`: Unit = {
+    val sentence = List("Yes", "man")
+    val res = sentenceAnagrams(sentence)
+    val ans = Set(
+      List("en", "as", "my"),
+      List("en", "my", "as"),
+      List("man", "yes"),
+      List("men", "say"),
+      List("as", "en", "my"),
+      List("as", "my", "en"),
+      List("sane", "my"),
+      List("Sean", "my"),
+      List("my", "en", "as"),
+      List("my", "as", "en"),
+      List("my", "sane"),
+      List("my", "Sean"),
+      List("say", "men"),
+      List("yes", "man")
+    )
+
+    assertEquals(ans, res.toSet)
   }
 
 

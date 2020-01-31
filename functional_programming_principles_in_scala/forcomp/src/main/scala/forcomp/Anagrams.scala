@@ -127,7 +127,19 @@ object Anagrams extends AnagramsInterface {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = (x.toSet -- y.toSet).toList.sorted
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val resWithZero = subtractHelper(x, y)
+    resWithZero.filter(_._2 != 0)
+  }
+  
+  def subtractHelper(x: Occurrences, y: Occurrences): Occurrences = y match {
+    case Nil => x
+    case (cy, iy) :: rest => {
+      val xNew = x.map( occ => if (occ._1 == cy) (cy, occ._2 - iy) else occ)
+      subtract(xNew, rest)
+    }
+  }
+
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -169,7 +181,41 @@ object Anagrams extends AnagramsInterface {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  
+  // this take an os of given sentence,
+  // return all possible anagram sentence,
+  // each anagram sentence represent as a list of anagram words
+  // each anagram word represent as an os
+  def occurrencesAnagrams(os: Occurrences): List[List[Occurrences]] = {
+    if (os.length == 0) List(List(List()))
+    else {
+      val cs: List[Occurrences] = combinations(os).filter(_ != Nil)
+      for (c <- cs if dictionaryByOccurrences.contains(c); r <- (occurrencesAnagrams(subtract(os, c)))) yield c :: r
+    }
+  }
+
+  def anagramToSentence(oss: List[Occurrences]): List[Sentence] = {
+    val ossFiltered = oss.filter(_ != List())
+    val words_combinations = ossFiltered.map(dictionaryByOccurrences)
+    wordCombinationsToSentences(words_combinations)
+  }
+
+  def wordCombinationsToSentencesHelper(ws: List[Word], zls: List[List[Word]]): List[List[Word]] = {
+    for(z <- zls; w <- ws) yield w::z
+  }
+
+  def wordCombinationsToSentences(wss: List[List[Word]]): List[Sentence] = wss match {
+    case Nil => List(List())
+    case w :: rest => wordCombinationsToSentencesHelper(w, wordCombinationsToSentences(rest))
+  }
+
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = 
+    if (sentence.length == 0) List(List())
+    else {
+      val os = sentenceOccurrences(sentence)
+      val oss = occurrencesAnagrams(os)
+      oss.flatMap(anagramToSentence)
+    }
 }
 
 object Dictionary {
