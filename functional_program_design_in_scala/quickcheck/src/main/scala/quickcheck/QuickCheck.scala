@@ -87,4 +87,17 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     meldPropHelper(h1, h2)
   }
 
+  def deleteMinPropHelper(h: H): Boolean = {
+    if (isEmpty(h)) true
+    else {
+      val min1 = findMin(h)
+      val h1 = deleteMin(h)
+      if (isEmpty(h1)) true else min1 < findMin(h1)
+    }
+  }
+
+  property("deleteMin1") = forAll { (h: H) =>
+    deleteMinPropHelper(h)
+  }
+
 }
