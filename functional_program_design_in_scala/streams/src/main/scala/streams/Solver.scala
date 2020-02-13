@@ -26,9 +26,9 @@ trait Solver extends GameDef {
    * It should only return valid neighbors, i.e. block positions
    * that are inside the terrain.
    */
-  def neighborsWithHistory(b: Block, history: List[Move]): LazyList[(Block, List[Move])] = history match {
-    case Nil => LazyList()
-    case m :: rest => ???
+  def neighborsWithHistory(b: Block, history: List[Move]): LazyList[(Block, List[Move])] = {
+    val ls = for {n <- b.legalNeighbors} yield (n._1, n._2 :: history)
+    ls.to(LazyList)
   }
 
   /**

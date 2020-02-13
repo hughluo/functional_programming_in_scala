@@ -58,6 +58,15 @@ class BloxorzSuite {
       assertEquals(Pos(1, 1), startPos)
     }
 
+  @Test def `neighborsWithHistory level 1 `: Unit =
+    new Level1 {
+      val res = neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up))
+      val ans = Set(
+        (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      )
+      assertEquals(ans, res.toSet)
+    }
 
   @Test def `optimal solution for level 1 (5pts)`: Unit =
     new Level1 {
