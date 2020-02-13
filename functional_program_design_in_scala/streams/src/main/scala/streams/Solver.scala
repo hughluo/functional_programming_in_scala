@@ -37,7 +37,9 @@ trait Solver extends GameDef {
    * make sure that we don't explore circular paths.
    */
   def newNeighborsOnly(neighbors: LazyList[(Block, List[Move])],
-                       explored: Set[Block]): LazyList[(Block, List[Move])] = ???
+                       explored: Set[Block]): LazyList[(Block, List[Move])] = {
+    neighbors.filterNot(n => explored contains(n._1))
+  }
 
   /**
    * The function `from` returns the lazy list of all possible paths
