@@ -8,6 +8,6 @@ Assignment for course [Functional Programming in Scala](https://www.coursera.org
 Pass 5/5
 ## Functional Program Design in Scala
 [Subdir](https://github.com/hughluo/functional_programming_in_scala/tree/master/functional_program_design_in_scala)
-Pass 1/3
+Pass 3/3
 
 
