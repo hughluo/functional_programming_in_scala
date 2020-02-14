@@ -10,4 +10,8 @@ Pass 5/5
 [Subdir](https://github.com/hughluo/functional_programming_in_scala/tree/master/functional_program_design_in_scala)
 Pass 3/3
 
+## Parallel programming
+[Subdir]
+Pass 0/4
+
 
