@@ -15,12 +15,10 @@ object Polynomial extends PolynomialInterface {
     val bv = b()
     val dv = delta()
 
-    if (dv < 0) Set()
-    else {
-      val sqrDelta = scala.math.pow(dv, 1/2)
-      val root1 = (- bv + sqrDelta) / (2 * av)
-      val root2 = (- bv - sqrDelta) / (2 * av)
-      if (dv == 0) Set(root1) else Set(root1, root2)
-    }
+
+    val sqrDelta = math.sqrt(dv)
+    val root1 = (- bv + sqrDelta) / (2 * av)
+    val root2 = (- bv - sqrDelta) / (2 * av)
+    if (dv >= 0) Set(root1, root2) else Set()
   }
 }
