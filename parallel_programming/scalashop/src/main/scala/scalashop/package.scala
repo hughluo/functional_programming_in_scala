@@ -43,7 +43,22 @@ package object scalashop extends BoxBlurKernelInterface {
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
 
     // TODO implement using while loops
-    ???
+
+    val pixels = for {
+      dx <- -radius to radius
+      dy <- -radius to radius
+      if x + dx >= 0 && x + dx < src.width && y + dy >= 0 && y + dy < src.height
+    } yield src(x + dx, y + dy)
+
+    def avg(xs: Seq[Int]): Int = xs.sum / xs.size
+
+    val avgR = avg(pixels map (red(_)))
+    val avgG = avg(pixels map (green(_)))
+    val avgB = avg(pixels map (blue(_)))
+    val avgA = avg(pixels map (alpha(_)))
+
+
+    rgba(avgR, avgG, avgB, avgA)
   }
 
   val forkJoinPool = new ForkJoinPool
