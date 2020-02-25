@@ -41,8 +41,13 @@ object HorizontalBoxBlur extends HorizontalBoxBlurInterface {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
   // TODO implement this method using the `boxBlurKernel` method
-
-  ???
+    for {
+      y <- from until end
+      x <- 0 until src.height
+      if y >= 0 && y < src.height
+    } yield {
+      dst.update(x, y,  boxBlurKernel(src, x, y, radius))
+    }
   }
 
   /** Blurs the rows of the source image in parallel using `numTasks` tasks.
@@ -53,8 +58,26 @@ object HorizontalBoxBlur extends HorizontalBoxBlurInterface {
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
   // TODO implement using the `task` construct and the `blur` method
+  def helper(fromToPairs: List[(Int, Int)]): Unit = {
+    if (fromToPairs.isEmpty) Nil
+    else {
+      val pendingTasks = fromToPairs.tail.map(p => task {
+        blur(src, dst, p._1, p._2, radius)
+      })
+      blur(src, dst, fromToPairs.head._1, fromToPairs.head._2, radius)
+      pendingTasks.map(_.join())
+    }
+  }
 
-  ???
+    helper(fromToPairs(src.width, Math.min(1, numTasks)))
+  }
+
+  def fromToPairs(height: Int, numTasks: Int) = {
+    val step = (height + 1) / numTasks
+    val splittingPts = 0 to (height - 1) by step
+    val fromLst = splittingPts.toList
+    val toList = fromLst map (x => Math.min(x + step, height))
+    fromLst zip toList
   }
 
 }

@@ -17,6 +17,15 @@ object VerticalBoxBlurRunner {
     val height = 1080
     val src = new Img(width, height)
     val dst = new Img(width, height)
+    VerticalBoxBlur.blur(src, dst, 0, width, radius)
+  }
+
+  def main1(args: Array[String]): Unit = {
+    val radius = 3
+    val width = 1920
+    val height = 1080
+    val src = new Img(width, height)
+    val dst = new Img(width, height)
     val seqtime = standardConfig measure {
       VerticalBoxBlur.blur(src, dst, 0, width, radius)
     }
@@ -72,7 +81,7 @@ object VerticalBoxBlur extends VerticalBoxBlurInterface {
       }
     }
 
-    helper(fromToPairs(src.width, numTasks))
+    helper(fromToPairs(src.width, Math.min(1, numTasks)))
   }
 
   def fromToPairs(width: Int, numTasks: Int) = {
