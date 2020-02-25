@@ -43,15 +43,12 @@ object VerticalBoxBlur extends VerticalBoxBlurInterface {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method
-    var xIdx = from
-    var yIdx = 0
-    while (xIdx < end) {
-      while (yIdx < src.height) {
-        val rgba = boxBlurKernel(src, xIdx, yIdx, radius)
-        dst.update(xIdx, yIdx, rgba)
-        xIdx += 1
-        yIdx += 1
-      }
+    for {
+      x <- from until end
+      y <- 0 until src.height
+      if x >= 0 && x < src.width
+    } yield {
+      dst.update(x, y,  boxBlurKernel(src, x, y, radius))
     }
   }
 
@@ -64,9 +61,21 @@ object VerticalBoxBlur extends VerticalBoxBlurInterface {
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
     // TODO implement using the `task` construct and the `blur` method
 
+    def helper(fromToPairs: List[(Int, Int)]): Unit = {
+      if (fromToPairs.isEmpty) Nil
+      else {
+        val pendingTasks = fromToPairs.tail.map(p => task {
+          blur(src, dst, p._1, p._2, radius)
+        })
+        blur(src, dst, fromToPairs.head._1, fromToPairs.head._2, radius)
+        pendingTasks.map(_.join())
+      }
+    }
+
+    helper(fromToPairs(src.width, numTasks))
   }
 
-  def fromToPair(width: Int, numTasks: Int) = {
+  def fromToPairs(width: Int, numTasks: Int) = {
     val step = (width + 1) / numTasks
     val splittingPts = 0 to (width - 1) by step
     val fromLst = splittingPts.toList
