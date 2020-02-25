@@ -12,6 +12,6 @@ Pass 3/3
 
 ## Parallel programming
 [Subdir](https://github.com/hughluo/functional_programming_in_scala/tree/master/parallel_programming)
-Pass 0/4
+Pass 1/4
 
 
