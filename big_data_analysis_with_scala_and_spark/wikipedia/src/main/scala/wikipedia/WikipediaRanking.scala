@@ -61,7 +61,8 @@ object WikipediaRanking extends WikipediaRankingInterface {
     rdd.flatMap( article => for {
       lang <- langs
       if article.mentionsLanguage(lang)
-    } yield (lang, article)).groupByKey()
+    } yield (lang, article))
+      .groupByKey()
   }
 
   /* (2) Compute the language ranking again, but now using the inverted index. Can you notice
@@ -70,7 +71,13 @@ object WikipediaRanking extends WikipediaRankingInterface {
    *   Note: this operation is long-running. It can potentially run for
    *   several seconds.
    */
-  def rankLangsUsingIndex(index: RDD[(String, Iterable[WikipediaArticle])]): List[(String, Int)] = ???
+  def rankLangsUsingIndex(index: RDD[(String, Iterable[WikipediaArticle])]): List[(String, Int)] = {
+    index.map( e => (e._1, e._2.size))
+      .collect()
+      .toList
+      .sortBy(_._2)
+      .reverse
+  }
 
   /* (3) Use `reduceByKey` so that the computation of the index and the ranking are combined.
    *     Can you notice an improvement in performance compared to measuring *both* the computation of the index
