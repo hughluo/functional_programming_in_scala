@@ -73,7 +73,7 @@ object WikipediaRanking extends WikipediaRankingInterface {
    */
   def rankLangsUsingIndex(index: RDD[(String, Iterable[WikipediaArticle])]): List[(String, Int)] = {
     index.map( e => (e._1, e._2.size))
-      .collect()
+      .collect
       .toList
       .sortBy(_._2)
       .reverse
@@ -86,7 +86,17 @@ object WikipediaRanking extends WikipediaRankingInterface {
    *   Note: this operation is long-running. It can potentially run for
    *   several seconds.
    */
-  def rankLangsReduceByKey(langs: List[String], rdd: RDD[WikipediaArticle]): List[(String, Int)] = ???
+  def rankLangsReduceByKey(langs: List[String], rdd: RDD[WikipediaArticle]): List[(String, Int)] = {
+    rdd.flatMap( article => for {
+      lang <- langs
+      if article.mentionsLanguage(lang)
+    } yield (lang, 1))
+      .reduceByKey(_ + _)
+      .collect
+      .sortBy(_._2)
+      .reverse
+      .toList
+  }
 
   def main(args: Array[String]): Unit = {
 
