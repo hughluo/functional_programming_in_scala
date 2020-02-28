@@ -29,6 +29,19 @@ class StackOverflowSuite {
     override def kmeansMaxIterations = 120
   }
 
+  trait TestRDDs {
+    val rdd0 = sc.parallelize(Seq(
+      Posting(1, 100, None, None, 0, None),
+      Posting(2, 201, None, Some(100), 1, None),
+      Posting(2, 202, None, Some(100), 1, None),
+      Posting(1, 101, None, None, 0, None),
+      Posting(2, 204, None, Some(101), 1, None),
+      Posting(1, 102, None, None, 0, None),
+      Posting(2, 205, None, None, 0, None),
+    ))
+
+  }
+
   @Test def `testObject can be instantiated`: Unit = {
     val instantiatable = try {
       testObject
@@ -40,18 +53,11 @@ class StackOverflowSuite {
   }
 
   @Test def `groupedPosting on simple case`: Unit = {
-    val rdd = sc.parallelize(Seq(
-      Posting(1, 100, None, None, 0, None),
-      Posting(2, 201, None, Some(100), 1, None),
-      Posting(2, 202, None, Some(100), 1, None),
-      Posting(1, 101, None, None, 0, None),
-      Posting(2, 204, None, Some(101), 1, None),
-      Posting(1, 102, None, None, 0, None),
-      Posting(2, 205, None, None, 0, None),
-    ))
-    val res = groupedPostings(rdd).collect().toList
-    assert(res.size == 2)
-    assert(res.map(_._2.size).reduce(_+_) == 3)
+    new TestRDDs {
+      val res = groupedPostings(rdd0).collect().toList
+      assert(res.size == 2)
+      assert(res.map(_._2.size).reduce(_ + _) == 3)
+    }
   }
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(100 * 1000)

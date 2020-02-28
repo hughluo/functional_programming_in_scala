@@ -98,7 +98,8 @@ class StackOverflow extends StackOverflowInterface with Serializable {
       highScore
     }
 
-    ???
+    grouped.mapValues( xs => (xs.head._1, answerHighScore(xs.unzip._2.toArray)))
+      .map( p => (p._2._1, p._2._2))
   }
 
 
