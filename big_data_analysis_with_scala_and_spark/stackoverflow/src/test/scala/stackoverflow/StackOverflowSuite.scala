@@ -33,7 +33,7 @@ class StackOverflowSuite {
     val rdd0 = sc.parallelize(Seq(
       Posting(1, 100, None, None, 0, None),
       Posting(2, 201, None, Some(100), 1, None),
-      Posting(2, 202, None, Some(100), 1, None),
+      Posting(2, 202, None, Some(100), 2, None),
       Posting(1, 101, None, None, 0, None),
       Posting(2, 204, None, Some(101), 1, None),
       Posting(1, 102, None, None, 0, None),
@@ -52,11 +52,21 @@ class StackOverflowSuite {
     assert(instantiatable, "Can't instantiate a StackOverflow object")
   }
 
-  @Test def `groupedPosting on simple case`: Unit = {
+  @Test def `groupedPostings on simple case`: Unit = {
     new TestRDDs {
       val res = groupedPostings(rdd0).collect().toList
       assert(res.size == 2)
       assert(res.map(_._2.size).reduce(_ + _) == 3)
+    }
+  }
+
+  @Test def `scoredPostings on simple case`: Unit = {
+    new TestRDDs {
+      val res = scoredPostings(groupedPostings(rdd0))
+      val r100 = res.filter(r => r._1.id == 100).collect().toList.head
+      val r101 = res.filter(r => r._1.id == 101).collect().toList.head
+      assertEquals(r100._2, 2)
+      assertEquals(r101._2, 1)
     }
   }
 
