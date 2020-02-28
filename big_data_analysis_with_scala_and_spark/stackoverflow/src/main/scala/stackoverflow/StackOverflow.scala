@@ -119,7 +119,9 @@ class StackOverflow extends StackOverflowInterface with Serializable {
       }
     }
 
-    ???
+    scored.map(s => ( firstLangInTag(s._1.tags, langs), s._2))
+      .filter(p => p._1.isDefined)
+      .map(p => (p._1.get * langSpread, p._2))
   }
 
 

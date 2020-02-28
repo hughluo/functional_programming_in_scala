@@ -30,7 +30,7 @@ class StackOverflowSuite {
   }
 
   trait TestRDDs {
-    val rdd0 = sc.parallelize(Seq(
+    val RDD0 = sc.parallelize(Seq(
       Posting(1, 100, None, None, 0, None),
       Posting(2, 201, None, Some(100), 1, None),
       Posting(2, 202, None, Some(100), 2, None),
@@ -38,6 +38,14 @@ class StackOverflowSuite {
       Posting(2, 204, None, Some(101), 1, None),
       Posting(1, 102, None, None, 0, None),
       Posting(2, 205, None, None, 0, None),
+    ))
+
+    val RDDScored = sc.parallelize(Seq(
+      (Posting(1, 6,   None, None, 140, Some("CSS")),  67),
+      (Posting(1, 42,  None, None, 155, Some("PHP")),  89),
+      (Posting(1, 72,  None, None, 16,  Some("Ruby")), 3),
+      (Posting(1, 126, None, None, 33,  Some("Java")), 30),
+      (Posting(1, 174, None, None, 38,  Some("C#")),   20),
     ))
 
   }
@@ -54,7 +62,7 @@ class StackOverflowSuite {
 
   @Test def `groupedPostings on simple case`: Unit = {
     new TestRDDs {
-      val res = groupedPostings(rdd0).collect().toList
+      val res = groupedPostings(RDD0).collect().toList
       assert(res.size == 2)
       assert(res.map(_._2.size).reduce(_ + _) == 3)
     }
@@ -62,11 +70,25 @@ class StackOverflowSuite {
 
   @Test def `scoredPostings on simple case`: Unit = {
     new TestRDDs {
-      val res = scoredPostings(groupedPostings(rdd0))
+      val res = scoredPostings(groupedPostings(RDD0))
       val r100 = res.filter(r => r._1.id == 100).collect().toList.head
       val r101 = res.filter(r => r._1.id == 101).collect().toList.head
       assertEquals(r100._2, 2)
       assertEquals(r101._2, 1)
+    }
+  }
+
+  @Test def`vectorPostings on simple case`: Unit = {
+    new TestRDDs {
+      val res = vectorPostings(RDDScored).collect().toSet
+      val ans = Set(
+        (350000, 67),
+        (100000, 89),
+        (300000, 3),
+        (50000,  30),
+        (200000, 20)
+      )
+      assertEquals(res, ans)
     }
   }
 
