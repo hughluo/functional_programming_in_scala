@@ -61,7 +61,27 @@ object TimeUsage extends TimeUsageInterface {
     *    “t10”, “t12”, “t13”, “t14”, “t15”, “t16” and “t18” (those which are not part of the previous groups only).
     */
   def classifiedColumns(columnNames: List[String]): (List[Column], List[Column], List[Column]) = {
-    ???
+    val primaryPrefix = List("t01", "t03", "t11", "t1801", "t1803")
+    val workPrefix = List("t05", "t1805")
+    val otherPrefix = List("t02", "t04", "t06", "t07", "t08", "t09", "t10", "t12", "t13", "t14", "t15", "t16", "t18")
+
+    def assignGroup(columnName: String): Int = {
+      if (primaryPrefix.exists(columnName.startsWith)) 0
+      else if (workPrefix.exists(columnName.startsWith)) 1
+      else if (otherPrefix.exists(columnName.startsWith)) 2
+      else -1
+    }
+
+    val resultList = columnNames.map(n => (assignGroup(n), n))
+      .filter(_._1 != -1)
+      .groupBy(_._1)
+      .map(cs => (cs._1, cs._2.map(p => new Column(p._2))))
+      .toList
+
+    val primaryColumns = resultList.filter(_._1 == 0).head._2
+    val workColumns = resultList.filter(_._1 == 1).head._2
+    val otherColumns = resultList.filter(_._1 == 2).head._2
+    (primaryColumns, workColumns, otherColumns)
   }
 
   /** @return a projection of the initial DataFrame such that all columns containing hours spent on primary needs
