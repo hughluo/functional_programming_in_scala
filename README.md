@@ -16,6 +16,6 @@ Pass 1/4
 
 ## Big Data Analysis with Scala and Spark
 [Subdir](https://github.com/hughluo/functional_programming_in_scala/tree/master/big_data_analysis_with_scala_and_spark)
-Pass 2/3
+Pass 3/3
 
 
